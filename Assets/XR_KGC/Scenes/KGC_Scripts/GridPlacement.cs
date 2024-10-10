@@ -11,7 +11,6 @@ public class GridPlacement : MonoBehaviour
 
     [SerializeField]
     float gridDrawExtent = 5.0f; // 그리드의 최대 범위 설정
-           
 
     private void Start()
     {
@@ -34,6 +33,13 @@ public class GridPlacement : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 클릭을 감지
         {
             Vector3 mousePosition = Input.mousePosition;
+
+            // 화면 좌표가 유효한지 확인합니다.
+            if (mousePosition.x < 0 || mousePosition.y < 0 || mousePosition.x > Screen.width || mousePosition.y > Screen.height)
+            {
+                return; // 유효하지 않은 좌표인 경우 함수 종료
+            }
+
             Ray ray = mainCamera.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
@@ -49,7 +55,20 @@ public class GridPlacement : MonoBehaviour
 
     private void HighlightGrid()
     {
+        if (mainCamera == null)
+        {
+            Debug.LogWarning("Main camera is not assigned.");
+            return; // 카메라가 없는 경우 함수 종료
+        }
+
         Vector3 mousePosition = Input.mousePosition;
+
+        // 마우스 좌표가 화면 범위 내에 있는지 확인
+        if (mousePosition.x < 0 || mousePosition.y < 0 || mousePosition.x > Screen.width || mousePosition.y > Screen.height)
+        {
+            return; // 유효하지 않은 좌표인 경우 함수 종료
+        }
+
         Ray ray = mainCamera.ScreenPointToRay(mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
@@ -118,5 +137,4 @@ public class GridPlacement : MonoBehaviour
 
         return new Vector3(x, y, z);
     }
-
 }
